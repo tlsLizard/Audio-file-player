@@ -2,8 +2,22 @@ import sys
 from PySide6.QtWidgets import QApplication, QWidget, QGridLayout, QSizePolicy, QFrame
 
 class Chessboard(QFrame):
-    def __init__(self, parent):
+
+        piece_images = {
+            'Br': './pieces/Chess_rdt60.png',  # R pour la tour
+            'Bn': './pieces/Chess_ndt60.png',  # N pour le cavalier
+            'Bb': './pieces/Chess_bdt60.png',  # B pour le fou
+            'Bq': './pieces/Chess_qdt60.png',  # Q pour la reine
+            'Bk': './pieces/Chess_kdt60.png',  # K pour le roi
+            'Bp': './pieces/Chess_pdt60.png',  # P pour le pion
+        }
+
+    def __init__(self):
         super().__init__()
+
+        self.setWindowTitle('Chessboard')
+        self.setFixedHeight(400)
+        self.setFixedWidth(400)
 
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setContentsMargins(0, 0, 0, 0)
@@ -20,7 +34,7 @@ class Chessboard(QFrame):
             for col, file in enumerate('abcdefgh'):
                 square = QWidget(self)
                 square.setObjectName(file + rank)
-                square.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                #square.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
                 if row % 2 == col % 2:
                     square.setStyleSheet('background-color: #F0D9B5')
                 else:
