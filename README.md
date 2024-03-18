@@ -1,4 +1,6 @@
-#### Interface Utilisateur :
+# Lecteur de Musique avec PyQt6
+
+Ce projet consiste en la création d'un lecteur de musique interactif en utilisant PyQt6, une bibliothèque graphique multiplateforme pour Python. L'application permettra aux utilisateurs de charger, de lire, de mettre en pause et de gérer des fichiers audio, ainsi que de créer et de gérer des listes de lecture personnalisées. Le lecteur de musique offrira une interface utilisateur intuitive avec des fonctionnalités de contrôle audio et d'affichage des métadonnées des chansons en cours de lecture. Avec cette application, les utilisateurs pourront profiter de leur musique préférée tout en explorant une interface conviviale et esthétique.#### Interface Utilisateur :
 1. **Boutons de Contrôle Audio** : Ajoutez des boutons pour jouer, mettre en pause, arrêter et sauter des pistes.
 2. **Affichage du Titre de la Chanson** : Créez une zone d'affichage pour le titre de la chanson en cours de lecture.
 3. **Liste de Lecture** : Utilisez un widget QListWidget pour afficher la liste de lecture.
