@@ -1,18 +1,20 @@
-import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton
+from PySide6.QtWidgets import QApplication, QFileDialog
+from pydub import AudioSegment
+from pydub.playback import play
 
-# Version 2 : Setting up a separate class
-class ButtonHolder(QMainWindow):
-    def __init__(self):
-        super().__init__()
+# Créer une application Qt
+app = QApplication([])
 
-        window = QMainWindow()
-        window.setWindowTitle('Chessboard')
-        window.setGeometry(100, 100, 800, 800)
+# Afficher la boîte de dialogue pour sélectionner un fichier
+fichier_selectionne, _ = QFileDialog.getOpenFileName(None, "Sélectionner un fichier MP3", "", "Fichiers MP3 (*.mp3)")
 
-app = QApplication(sys.argv)
+# Vérifier si un fichier a été sélectionné
+if fichier_selectionne:
+    print("Fichier sélectionné :", fichier_selectionne)
 
-window = ButtonHolder()
+    audio = AudioSegment.from_file(fichier_selectionne, format="mp3")
 
-window.show()
-app.exec()
+    play(audio)
+
+else:
+    print("Aucun fichier sélectionné.")
