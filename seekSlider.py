@@ -1,45 +1,44 @@
-import sys
 from PySide6.QtWidgets import QSlider, QApplication, QMainWindow
-from PySide6.QtCore import Qt, Slot
 from pydub import AudioSegment
-from pydub.playback import play
-from threading import Thread
-import time
+from PySide6.QtCore import Qt
+import threading
+import pyaudio
+import wave
+import sys
 
+class AudioThread(threading.Thread):
+    def __init__(self, audio):
+        # Exporter le fichier MP3 en WAV
+        audio.export('output.wav', format='wav')
 
-class AudioPlayerThread(Thread):
-    def __init__(self, audio : AudioSegment):
-        super().__init__()
-        self.audio = audio
-        self.percent : int = 1
-        self.start_time : int = 0
-        self.number_of_minutes : int = 0
-        self.remaining_seconds : int = 0
+        self.wf = wave.open('output.wav', 'rb')
+
+        # Instantiate PyAudio and initialize PortAudio system resources (2)
+        p = pyaudio.PyAudio()
+
+        # Open stream using callback (3)
+        self._stream = p.open(format=p.get_format_from_width(self.wf.getsampwidth()),
+                        channels=self.wf.getnchannels(),
+                        rate=self.wf.getframerate(),
+                        output=True,
+                        stream_callback=self._callback)
         
-    def run(self):
-        player : Thread = Thread(target=play, args=(self.audio,))
 
-        player.name = "AudioPlayerThread"
-
-        self.start_time = time.time()
-
-        player.start()
-
-    def getCurrentTime(self) -> int:
-        current_time = round(time.time() - self.start_time)
-
-        # Convertir les secondes en minutes
-        self.number_of_minutes = current_time // 60
-
-        # Calculer les secondes restantes
-        self.remaining_seconds = current_time % 60
-
-        # Retourner le temps écoulé en secondes
-        return self.number_of_minutes * 60 + self.remaining_seconds
+    def _callback(self, in_data, frame_count, time_info, status):
+        data = self.wf.readframes(frame_count)
+        return (data, pyaudio.paContinue)
     
-    def getPercent(self) -> int:
-        self.percent = round((self.getCurrentTime() / self.audio.duration_seconds) * 100)
-        return self.percent
+    def pause(self):
+        if not self._stream.is_stopped():
+            self._stream.stop_stream()
+
+    def start(self):
+        if self._stream.is_stopped():
+            self._stream.start_stream()
+
+    def position(self):
+        print(self.wf.tell())
+    
 
 class SeekSlider(QSlider):
 
@@ -48,9 +47,7 @@ class SeekSlider(QSlider):
 
         audio : AudioSegment = AudioSegment.from_file("/home/xelame/Music/Fuji Kaze/michi-teyu-ku-overflowing-official-video.wav")
 
-        self.player = AudioPlayerThread(audio)
-
-        self.player.run()
+        self.player = AudioThread(audio)
 
         self.setRange(0, 100)
         self.setValue(0)

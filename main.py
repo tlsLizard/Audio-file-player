@@ -1,6 +1,4 @@
-from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QWidget, QSlider
-from PySide6.QtMultimedia import QAudioOutput
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QWidget
 from toolbar import ToolBar
 import sys
 from seekSlider import SeekSlider
@@ -12,7 +10,6 @@ class AudioPlayer(QMainWindow):
         self.setWindowTitle("Lecteur audio")
 
         toolbar = ToolBar()
-        
         self.addToolBar(toolbar)
 
         # Créer les boutons de contrôle
@@ -21,10 +18,11 @@ class AudioPlayer(QMainWindow):
         self.stopButton = QPushButton("Stop")
         self.slider = SeekSlider()
 
-        layoutH = QHBoxLayout()
-        layoutH.addWidget(self.playButton)
-        layoutH.addWidget(self.pauseButton)
-        layoutH.addWidget(self.stopButton)
+
+        # Connecter les boutons aux actions
+        self.playButton.clicked.connect(self.slider.player.start)
+        self.pauseButton.clicked.connect(self.slider.player.pause)
+        self.stopButton.clicked.connect(self.slider.player.position)
 
         # Créer la mise en page
         layoutH = QHBoxLayout()
