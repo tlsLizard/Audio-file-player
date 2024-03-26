@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QWidget
+from PySide6.QtCore import SIGNAL
 from toolbar import ToolBar
 import sys
 from seekSlider import SeekSlider
@@ -19,11 +20,6 @@ class AudioPlayer(QMainWindow):
         self.slider = SeekSlider()
 
 
-        # Connecter les boutons aux actions
-        self.playButton.clicked.connect(self.slider.player.start)
-        self.pauseButton.clicked.connect(self.slider.player.pause)
-        self.stopButton.clicked.connect(self.slider.player.position)
-
         # Créer la mise en page
         layoutH = QHBoxLayout()
         layoutH.addWidget(self.playButton)
@@ -37,6 +33,9 @@ class AudioPlayer(QMainWindow):
         central_widget = QWidget()
         central_widget.setLayout(layoutV)
         self.setCentralWidget(central_widget)
+
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

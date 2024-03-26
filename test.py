@@ -35,7 +35,7 @@ current_position = 0
 stream.start_stream()
 
 # Attendre un certain temps
-time.sleep(2)
+time.sleep(1000)
 
 # Mettre en pause la lecture
 stream.stop_stream()
