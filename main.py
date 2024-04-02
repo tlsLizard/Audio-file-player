@@ -34,7 +34,7 @@ class AudioPlayer(QMainWindow):
         central_widget.setLayout(layoutV)
         self.setCentralWidget(central_widget)
 
-
+        
 
 
 if __name__ == "__main__":

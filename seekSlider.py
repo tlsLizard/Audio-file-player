@@ -1,19 +1,20 @@
 from PySide6.QtWidgets import QSlider, QApplication, QMainWindow
 from pydub import AudioSegment
-from PySide6.QtCore import Qt, Slot
+from PySide6.QtCore import Qt, Slot, QTimer
 import pyaudio
 import wave
 import sys
+import time
 
 class SeekSlider(QSlider):
 
     def __init__(self):
         super().__init__()
 
-        audio : AudioSegment = AudioSegment.from_file("/home/xelame/Music/Fuji Kaze/michi-teyu-ku-overflowing-official-video.wav")
+        self.audio : AudioSegment = AudioSegment.from_file("/home/xelame/Music/Fuji Kaze/michi-teyu-ku-overflowing-official-video.wav")
 
         # Exporter le fichier MP3 en WAV
-        audio.export('output.wav', format='wav')
+        self.audio.export('output.wav', format='wav')
 
         self.wf = wave.open('output.wav', 'rb')
 
@@ -33,9 +34,16 @@ class SeekSlider(QSlider):
 
         self.setOrientation(Qt.Orientation.Horizontal)
 
+        self._current_time = time.time()
+
+        # Créer un temporisateur pour mettre à jour la position de lecture régulièrement
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_slider_position())
+        self.timer.start(100)  # Mettre à jour toutes les 100 millisecondes
+
     def _callback(self, in_data, frame_count, time_info, status):
         data = self.wf.readframes(frame_count)
-        print("Hello")
+        self.update_slider_position()
         return (data, pyaudio.paContinue)
     
     def pause(self):
@@ -48,13 +56,15 @@ class SeekSlider(QSlider):
     
     def update_slider_position(self):
         # Mettre à jour la position du curseur en fonction de la position de lecture
-        position = self.stream.get_time()
-        value = int(position / len(self.audio) * self.maximum())
+        position = self._stream.get_time() - self._current_time
+        value = int(position / self.audio.duration_seconds * self.maximum())
+        print("Position : ", position, " audio.lenght : ", self.audio.duration_seconds,  " max : ", self.maximum(), " value : ", value)
         self.setValue(value)
+        self.setSliderPosition(value)
 
     @Slot(int)
     def position(self):
-        return print(self.wf.tell())
+        return self.wf.tell()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
