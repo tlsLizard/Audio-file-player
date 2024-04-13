@@ -1,2 +1,5 @@
 qtenv
 PyQtChess
+vanv/
+__pycache__/
+.idea
